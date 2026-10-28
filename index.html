@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COA 5-Stage Pipelined Processor Simulator & Hazard Analysis Studio</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="brand-container">
+      <div class="brand-logo">CPU</div>
+      <div class="brand-title">
+        <h1>COA 5-Stage Pipelined Processor Studio</h1>
+        <p>Interactive Microarchitecture, Hazard Resolution & Performance Analyzer (Modules 1-3)</p>
+      </div>
+    </div>
+
+    <div class="student-badge">
+      <span><strong>Student:</strong> Kunal Yadav</span>
+      <span>|</span>
+      <span><strong>Roll:</strong> 2411021060008</span>
+      <span>|</span>
+      <span><strong>Squad:</strong> 70</span>
+      <span>|</span>
+      <span><strong>Course:</strong> COA</span>
+    </div>
+  </header>
+
+  <!-- Control & Toolbar -->
+  <section class="control-bar">
+    <div class="control-group">
+      <label for="preset-select" style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Preset Benchmark:</label>
+      <select id="preset-select" class="select-input">
+        <option value="raw_forwarding">Benchmark 1: RAW Data Hazard & Forwarding Unit</option>
+        <option value="load_use">Benchmark 2: Load-Use Hazard & 1-Cycle Stall Bubble</option>
+        <option value="branch_loop">Benchmark 3: Branch Loop & Control Hazard Flushes</option>
+        <option value="structural_mem">Benchmark 4: Structural Memory Hazard (Von Neumann)</option>
+        <option value="fibonacci">Benchmark 5: Fibonacci Sequence Generator</option>
+        <option value="custom">Custom Assembly Program</option>
+      </select>
+
+      <button id="btn-load-assemble" class="btn btn-primary" title="Assemble code and load into CPU memory">
+        <span>⚙️</span> Assemble & Load
+      </button>
+    </div>
+
+    <div class="control-group">
+      <button id="btn-step-cycle" class="btn btn-success" title="Execute exactly 1 clock cycle (F10)">
+        <span>⏭</span> Step Cycle
+      </button>
+      <button id="btn-run" class="btn btn-primary" title="Continuously run CPU cycles">
+        <span>▶</span> Run
+      </button>
+      <button id="btn-pause" class="btn btn-outline" style="display: none;" title="Pause execution">
+        <span>⏸</span> Pause
+      </button>
+      <button id="btn-reset" class="btn btn-outline" title="Reset CPU state to cycle 0">
+        <span>🔄</span> Reset
+      </button>
+
+      <div class="speed-slider-container">
+        <span>Speed:</span>
+        <input type="range" id="speed-slider" class="speed-slider" min="50" max="1500" step="50" value="400">
+        <span id="speed-label">400ms</span>
+      </div>
+
+      <button id="btn-open-config" class="btn btn-outline" title="Configure microarchitectural parameters">
+        <span>🛠</span> Architecture Settings
+      </button>
+    </div>
+  </section>
+
+  <!-- Tabs Navigation -->
+  <nav class="tabs-nav">
+    <button class="tab-btn active" data-tab="tab-studio">
+      <span>📊</span> Pipeline Space-Time Studio
+    </button>
+    <button class="tab-btn" data-tab="tab-schematic">
+      <span>📐</span> Datapath Microarchitecture Schematic
+    </button>
+    <button class="tab-btn" data-tab="tab-amdahl">
+      <span>📈</span> Amdahl's Law & Performance Lab
+    </button>
+    <button class="tab-btn" data-tab="tab-tests">
+      <span>🧪</span> Automated Verification Suite (50 Tests)
+    </button>
+  </nav>
+
+  <!-- Metric Ribbon -->
+  <div style="padding: 16px 24px 0 24px;">
+    <div class="metric-ribbon">
+      <div class="metric-pill">
+        <div class="label">Clock Cycle</div>
+        <div class="val highlight" id="metric-cycle">0</div>
+      </div>
+      <div class="metric-pill">
+        <div class="label">Instructions Retired</div>
+        <div class="val" id="metric-retired">0</div>
+      </div>
+      <div class="metric-pill">
+        <div class="label">Measured CPI</div>
+        <div class="val" id="metric-cpi">1.000</div>
+      </div>
+      <div class="metric-pill">
+        <div class="label">Pipeline Speedup</div>
+        <div class="val highlight" id="metric-speedup">1.00x</div>
+      </div>
+      <div class="metric-pill">
+        <div class="label">Data Stalls</div>
+        <div class="val" id="metric-data-stalls" style="color: var(--accent-rose);">0</div>
+      </div>
+      <div class="metric-pill">
+        <div class="label">Branch Flushes</div>
+        <div class="val" id="metric-flushes" style="color: var(--accent-amber);">0</div>
+      </div>
+      <div class="metric-pill">
+        <div class="label">Forwarding Bypasses</div>
+        <div class="val" id="metric-fwd-count" style="color: var(--accent-cyan);">0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 1: Pipeline Space-Time Studio -->
+  <main id="tab-studio" class="tab-content active">
+    <div class="studio-layout">
+      <!-- Left Panel: Assembly Code Editor & 5 Active Stage Cards -->
+      <aside class="sidebar-panel">
+        <div class="card">
+          <div class="card-header">
+            <h3><span>📝</span> Assembly Code Editor</h3>
+            <span id="editor-line-count" style="font-size: 0.72rem; color: var(--text-muted);">6 lines</span>
+          </div>
+          <div class="card-body">
+            <textarea id="code-editor" class="code-editor-area" spellcheck="false"></textarea>
+            <div id="assembly-error" style="display: none; margin-top: 8px; padding: 6px 10px; background: rgba(239,68,68,0.2); border: 1px solid var(--accent-rose); border-radius: 4px; font-size: 0.75rem; color: #fca5a5;"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3><span>⚡</span> Pipeline Stage Registers</h3>
+            <span style="font-size: 0.72rem; color: var(--accent-cyan);">Cycle-by-Cycle</span>
+          </div>
+          <div class="card-body">
+            <div id="stage-cards-container" class="stages-stack">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Right Panel: Interactive Space-Time Diagram Matrix -->
+      <section class="card" style="display: flex; flex-direction: column;">
+        <div class="card-header">
+          <h3><span>📅</span> Interactive Space-Time Diagram (Clock Cycle vs Instruction Matrix)</h3>
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <div style="font-size: 0.75rem; display: flex; gap: 8px;">
+              <span style="color: var(--stage-if);">■ IF</span>
+              <span style="color: var(--stage-id);">■ ID</span>
+              <span style="color: var(--stage-ex);">■ EX</span>
+              <span style="color: var(--stage-mem);">■ MEM</span>
+              <span style="color: var(--stage-wb);">■ WB</span>
+              <span style="color: var(--stage-stall);">■ STALL</span>
+              <span style="color: var(--stage-flush);">■ FLUSH</span>
+            </div>
+            <div style="display: flex; gap: 4px;">
+              <button id="btn-view-dynamic" class="btn btn-outline" style="padding: 2px 8px; font-size: 0.7rem; background: rgba(59,130,246,0.2); border-color: var(--accent-blue);" title="Textbook View: 1 row per dynamic executed instance">Dynamic Trace</button>
+              <button id="btn-view-static" class="btn btn-outline" style="padding: 2px 8px; font-size: 0.7rem;" title="Source View: 1 row per assembly instruction line">Static Lines</button>
+            </div>
+          </div>
+        </div>
+        <div class="card-body" style="padding: 0; flex: 1;">
+          <div id="space-time-container" class="space-time-wrapper">
+            <!-- Space-Time Table rendered here -->
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- TAB 2: Datapath Microarchitecture Schematic -->
+  <section id="tab-schematic" class="tab-content">
+    <div class="card">
+      <div class="card-header">
+        <h3><span>📐</span> 5-Stage MIPS/RISC-V Datapath Schematic (Active Stage & Forwarding Illumination)</h3>
+        <span style="font-size: 0.75rem; color: var(--accent-amber);">Live Hardware Signal Paths</span>
+      </div>
+      <div class="card-body" style="padding: 0;">
+        <div id="schematic-container" class="schematic-container">
+          <!-- SVG Schematic rendered dynamically -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 3: Amdahl's Law & Quantitative Performance Lab -->
+  <section id="tab-amdahl" class="tab-content">
+    <div class="amdahl-grid">
+      <div class="card">
+        <div class="card-header">
+          <h3><span>📐</span> Amdahl's Law Interactive Parameter Model</h3>
+        </div>
+        <div class="card-body">
+          <div class="formula-card">
+            S<sub>overall</sub> = 1 / [ (1 - f) + (f / s) ]
+          </div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px;">
+            Amdahl's Law models the theoretical upper bound of execution speedup attainable by improving a fraction <em>f</em> of an architectural task by enhancement factor <em>s</em>.
+          </p>
+
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+              <label for="slider-amdahl-f">Enhanced Fraction (f):</label>
+              <strong id="val-amdahl-f" style="color: var(--accent-cyan);">80%</strong>
+            </div>
+            <input type="range" id="slider-amdahl-f" class="speed-slider" style="width: 100%;" min="0" max="100" value="80">
+            <small>Portion of workload accelerated by pipelined execution / vectorization.</small>
+          </div>
+
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+              <label for="slider-amdahl-s">Enhancement Factor (s):</label>
+              <strong id="val-amdahl-s" style="color: var(--accent-emerald);">5.0x</strong>
+            </div>
+            <input type="range" id="slider-amdahl-s" class="speed-slider" style="width: 100%;" min="1" max="64" step="0.5" value="5">
+            <small>Speedup of the accelerated pipeline stages (e.g., 5-stage pipeline ideal speedup is 5x).</small>
+          </div>
+
+          <div style="margin-top: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="metric-pill">
+              <div class="label">Actual Overall Speedup</div>
+              <div class="val highlight" id="calc-overall-speedup">2.78x</div>
+            </div>
+            <div class="metric-pill">
+              <div class="label">Theoretical Max Limit (s → ∞)</div>
+              <div class="val" id="calc-max-limit">5.00x</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3><span>📊</span> Speedup Sensitivity Curve</h3>
+        </div>
+        <div class="card-body">
+          <div id="amdahl-chart-container" style="min-height: 280px; display: flex; align-items: center; justify-content: center; background: #0b1120; border-radius: 6px; padding: 16px;">
+            <!-- SVG Curve rendered here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 4: Automated Verification Suite -->
+  <section id="tab-tests" class="tab-content">
+    <div class="card">
+      <div class="card-header">
+        <h3><span>🧪</span> In-Browser Architectural Verification Suite (45 Assertions)</h3>
+        <button id="btn-run-all-tests" class="btn btn-primary">
+          <span>▶</span> Run All Tests
+        </button>
+      </div>
+      <div class="card-body">
+        <div id="test-results-container" style="font-family: var(--font-mono); font-size: 0.8rem; background: #0b1120; border-radius: 6px; padding: 16px; max-height: 500px; overflow-y: auto;">
+          <div style="color: var(--text-muted); text-align: center; padding: 30px;">
+            Click <strong>"Run All Tests"</strong> to verify ISA decoding, data forwarding, load-use bubbles, branch loops, structural stalls, and Amdahl formulas.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bottom Dock: Registers, Memory, and Console Log -->
+  <footer class="bottom-dock">
+    <!-- Register File Inspector -->
+    <div class="dock-column">
+      <div class="dock-header">
+        <span>32-bit Register File (R0 - R31)</span>
+        <div>
+          <button id="btn-format-dec" class="btn btn-outline" style="padding: 2px 6px; font-size: 0.7rem;">Dec</button>
+          <button id="btn-format-hex" class="btn btn-outline active" style="padding: 2px 6px; font-size: 0.7rem;">Hex</button>
+        </div>
+      </div>
+      <div class="dock-body" id="register-container">
+        <!-- Register items generated here -->
+      </div>
+    </div>
+
+    <!-- Data Memory Grid -->
+    <div class="dock-column">
+      <div class="dock-header">
+        <span>Data Memory (Word-Aligned RAM)</span>
+        <span style="font-size: 0.7rem; color: var(--text-muted);">4KB Space</span>
+      </div>
+      <div class="dock-body">
+        <table class="memory-table">
+          <thead>
+            <tr><th>Address</th><th>Word Index</th><th>Hex Value</th><th>Decimal</th></tr>
+          </thead>
+          <tbody id="memory-table-body">
+            <!-- Memory rows rendered here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Execution Event Log Console -->
+    <div class="dock-column">
+      <div class="dock-header">
+        <span>Execution Log & Hazard Diagnostics</span>
+        <button id="btn-clear-log" class="btn btn-outline" style="padding: 2px 6px; font-size: 0.7rem;">Clear</button>
+      </div>
+      <div class="dock-body" id="log-container">
+        <div class="log-stream" id="log-stream">
+          <div class="log-entry" style="color: var(--text-muted);">System ready. Select a preset benchmark or enter assembly code.</div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Microarchitecture Configuration Modal -->
+  <div id="config-modal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2>🛠 Microarchitectural Configuration</h2>
+        <button id="btn-close-modal" class="btn btn-outline" style="padding: 2px 8px;">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="cfg-forwarding">Data Forwarding Unit (Bypassing):</label>
+          <select id="cfg-forwarding" class="select-input" style="width: 100%;">
+            <option value="enabled" selected>Enabled (EX→EX and MEM→EX Hardware Bypassing)</option>
+            <option value="disabled">Disabled (Stall-Only Architecture, 2-3 cycle RAW penalty)</option>
+          </select>
+          <small>Disabling forwarding forces the pipeline to insert multiple stall bubbles until the destination register writes back in WB stage.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="cfg-branch-pred">Branch Prediction Strategy:</label>
+          <select id="cfg-branch-pred" class="select-input" style="width: 100%;">
+            <option value="predict-not-taken" selected>Static Predict-Not-Taken (Default RISC)</option>
+            <option value="2bit-dynamic">Dynamic 2-Bit Saturating Counter Predictor</option>
+            <option value="predict-taken">Static Predict-Taken</option>
+          </select>
+          <small>Configures whether branches are speculatively predicted not-taken, taken, or using a dynamic saturating 2-bit counter.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="cfg-memory-arch">Memory Subsystem Architecture:</label>
+          <select id="cfg-memory-arch" class="select-input" style="width: 100%;">
+            <option value="harvard" selected>Harvard Architecture (Separate Instruction & Data Caches)</option>
+            <option value="von-neumann">Von Neumann Architecture (Unified Memory Port with Structural Hazards)</option>
+          </select>
+          <small>Von Neumann mode introduces structural stalls when instruction fetch (IF) and memory data access (MEM) occur simultaneously.</small>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-apply-config" class="btn btn-primary">Apply & Reset CPU</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/engine/isa.js"></script>
+  <script src="js/engine/assembler.js"></script>
+  <script src="js/engine/hazard_unit.js"></script>
+  <script src="js/engine/datapath.js"></script>
+  <script src="js/engine/performance.js"></script>
+  <script src="js/ui/pipeline_renderer.js"></script>
+  <script src="js/ui/datapath_renderer.js"></script>
+  <script src="js/ui/app.js"></script>
+</body>
+</html>

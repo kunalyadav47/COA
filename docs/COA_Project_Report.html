@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>COA Microproject Report - Kunal Yadav (2411021060008)</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 18mm 14mm 18mm 14mm;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #1e293b;
+      line-height: 1.6;
+      background: #ffffff;
+      margin: 0 auto;
+      max-width: 900px;
+      padding: 2rem;
+    }
+    .cover-card {
+      border: 2px solid #0284c7;
+      border-radius: 8px;
+      padding: 2.2rem;
+      text-align: center;
+      margin-bottom: 2.5rem;
+      background: linear-gradient(180deg, #f0f9ff 0%, #ffffff 100%);
+    }
+    .cover-title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #0369a1;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+    }
+    .cover-subtitle {
+      font-size: 1.05rem;
+      color: #475569;
+      margin-bottom: 1.6rem;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      max-width: 650px;
+      margin: 0 auto;
+      text-align: left;
+      font-size: 0.9rem;
+      background: #ffffff;
+      padding: 1.25rem;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+    }
+    .meta-item strong {
+      color: #0f172a;
+    }
+    h2 {
+      font-size: 1.35rem;
+      color: #0369a1;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 0.35rem;
+      margin-top: 2rem;
+      margin-bottom: 0.8rem;
+    }
+    h3 {
+      font-size: 1.1rem;
+      color: #0f172a;
+      margin-top: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+    p, li {
+      font-size: 0.92rem;
+      color: #334155;
+    }
+    ul, ol {
+      margin-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.25rem 0;
+      font-size: 0.85rem;
+    }
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 0.55rem 0.75rem;
+      text-align: left;
+    }
+    th {
+      background-color: #f1f5f9;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    code {
+      font-family: Consolas, monospace;
+      background: #f1f5f9;
+      color: #0284c7;
+      padding: 0.15rem 0.35rem;
+      border-radius: 4px;
+      font-size: 0.88em;
+    }
+    pre {
+      background: #0f172a;
+      color: #38bdf8;
+      padding: 1rem;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-family: Consolas, monospace;
+      font-size: 0.82rem;
+      margin: 1rem 0;
+      line-height: 1.45;
+    }
+    .screenshot-figure {
+      margin: 1.5rem 0;
+      text-align: center;
+      page-break-inside: avoid;
+    }
+    .screenshot-figure img {
+      max-width: 100%;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    }
+    .screenshot-caption {
+      font-size: 0.82rem;
+      color: #64748b;
+      margin-top: 0.4rem;
+      font-style: italic;
+    }
+    .callout {
+      background-color: #f8fafc;
+      border-left: 4px solid #0284c7;
+      padding: 1rem 1.25rem;
+      margin: 1.25rem 0;
+      border-radius: 0 6px 6px 0;
+    }
+    .page-break {
+      page-break-before: always;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cover Card -->
+  <div class="cover-card">
+    <div class="cover-title">Computer Organization & Architecture (COA)</div>
+    <div class="cover-subtitle">Official Undergraduate Academic Microproject Report</div>
+    
+    <div class="meta-grid">
+      <div class="meta-item"><strong>Student Name:</strong> Kunal Yadav</div>
+      <div class="meta-item"><strong>Roll Number:</strong> 2411021060008</div>
+      <div class="meta-item"><strong>Squad / Section:</strong> 70</div>
+      <div class="meta-item"><strong>Academic Course:</strong> Computer Organization & Architecture</div>
+      <div class="meta-item"><strong>Selected Focus:</strong> Module 3 (Instruction Pipelining & Hazard Resolution)</div>
+      <div class="meta-item"><strong>Curriculum Scope:</strong> Modules 1, 2, and 3 Integrated Design</div>
+    </div>
+  </div>
+
+  <!-- Abstract -->
+  <h2>1. Executive Summary & Abstract</h2>
+  <p>
+    Instruction-level parallelism (ILP) achieved via pipelining is the fundamental performance driver in modern microprocessors. While an ideal $k$-stage pipeline increases instruction throughput by a factor of $k$ ($\text{CPI} \approx 1.0$), realistic microarchitectures suffer from hazards—<strong>Structural, Data (RAW, WAR, WAW), and Control hazards</strong>—which inject stall bubbles and pipeline flushes.
+  </p>
+  <p>
+    This project delivers a complete, interactive, web-based 5-stage RISC processor simulator and hazard analysis workbench. The system models the classical 5 stages (IF, ID, EX, MEM, WB) with edge-triggered pipeline registers, hardware forwarding multiplexers, bubble interlocking, dynamic 2-bit saturating branch prediction, and unified memory arbitration. A real-time space-time diagram matrix and quantitative performance dashboard empirically confirm execution speedup and validate theoretical models, including Amdahl's Law.
+  </p>
+
+  <!-- Syllabus Mapping -->
+  <h2>2. Syllabus Topic Selection & Curriculum Mapping</h2>
+  <p>
+    The microproject directly addresses key competencies from the Kalvium / University COA syllabus across Modules 1, 2, and 3:
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>Module</th>
+        <th>Official Syllabus Topic</th>
+        <th>Implementation in Microproject</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Module 3</strong></td>
+        <td><strong>Pipelining: Concept, Stages, Throughput & Speedup</strong></td>
+        <td>Cycle-accurate 5-stage pipeline with real-time throughput, CPI, and speedup tracking.</td>
+      </tr>
+      <tr>
+        <td><strong>Module 3</strong></td>
+        <td><strong>Pipeline Hazards (Data, Control, Structural)</strong></td>
+        <td>Explicit hazard detection unit, load-use bubble insertion, and branch flush penalties.</td>
+      </tr>
+      <tr>
+        <td><strong>Module 3</strong></td>
+        <td><strong>Advanced Hazard Resolution (Forwarding / Bypassing)</strong></td>
+        <td>Hardware forwarding multiplexers routing EX/MEM and MEM/WB ALU outputs to EX inputs.</td>
+      </tr>
+      <tr>
+        <td><strong>Module 3</strong></td>
+        <td><strong>Quantitative CPU Performance & Amdahl's Law</strong></td>
+        <td>Interactive Amdahl's Law calculator with parametric speedup sensitivity curves.</td>
+      </tr>
+      <tr>
+        <td><strong>Module 2</strong></td>
+        <td><strong>The Instruction Cycle & Datapath Design</strong></td>
+        <td>Reverse-clock cycle stepping ensuring proper inter-stage register latching.</td>
+      </tr>
+      <tr>
+        <td><strong>Module 2</strong></td>
+        <td><strong>Addressing Modes & Instruction Decoder</strong></td>
+        <td>Hardwired control decoder supporting Register, Immediate, and Base-Offset modes.</td>
+      </tr>
+      <tr>
+        <td><strong>Module 1</strong></td>
+        <td><strong>Functional Units & Common Bus Organization</strong></td>
+        <td>Dual memory subsystem comparing Harvard (split cache) with Von Neumann (unified port).</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Application Overview Screenshot -->
+  <div class="screenshot-figure">
+    <img src="../screenshots/coa_overview_spacetime_studio.png" alt="Space-Time Diagram Matrix">
+    <div class="screenshot-caption">Figure 1: Interactive Pipeline Space-Time Studio displaying the clock cycle vs. instruction execution matrix and active stage cards.</div>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- Microarchitectural Design -->
+  <h2>3. Microarchitectural Specification & 5-Stage Datapath</h2>
+  <p>
+    The simulator models a 32-bit RISC processor (MIPS / RISC-V subset) with 32 general-purpose registers (<code>$zero</code>, <code>$t0-$t9</code>, <code>$s0-$s7</code>, <code>$sp</code>, <code>$ra</code>). The datapath features five synchronized stages:
+  </p>
+  <ul>
+    <li><strong>Instruction Fetch (IF):</strong> Program Counter ($PC$) indexes Instruction RAM; speculatively updates $PC \leftarrow PC + 4$; latches instruction into <code>IF/ID</code>.</li>
+    <li><strong>Instruction Decode / Register Read (ID):</strong> Hardwired control unit decodes opcode/funct; reads two register operands; sign-extends 16-bit immediate; evaluates early branch comparisons.</li>
+    <li><strong>Execution & Address Calculation (EX):</strong> ALU performs arithmetic/logical operations; Forwarding MUXes select between register file outputs, EX/MEM bypass, or MEM/WB bypass; computes branch target.</li>
+    <li><strong>Memory Access (MEM):</strong> Accesses 4KB word-aligned Data RAM for <code>LW</code> (Load) and <code>SW</code> (Store); arbitrates unified memory port in Von Neumann mode.</li>
+    <li><strong>Write-Back (WB):</strong> Multiplexer selects between ALU result and loaded memory data; updates destination register in register file.</li>
+  </ul>
+
+  <!-- Datapath Schematic Screenshot -->
+  <div class="screenshot-figure">
+    <img src="../screenshots/coa_datapath_schematic.png" alt="CPU Datapath Schematic">
+    <div class="screenshot-caption">Figure 2: Interactive SVG Datapath Schematic illustrating active hardware signal paths, register file ports, ALU, and forwarding bypass lines.</div>
+  </div>
+
+  <h2>4. Pipeline Hazards & Resolution Taxonomy</h2>
+
+  <h3>4.1 RAW Data Hazards & Forwarding (Bypassing) Unit</h3>
+  <p>
+    A Read-After-Write (RAW) hazard occurs when instruction $I_{k}$ writes to register $R_d$, and subsequent instruction $I_{k+1}$ reads $R_d$. Rather than stalling the consumer instruction until write-back in cycle 5, the simulator implements **Hardware Bypassing**:
+  </p>
+  <pre>
+ForwardA = 10 (EX/MEM -> EX) iff (EX_MEM.RegWrite && EX_MEM.WriteReg != 0 && EX_MEM.WriteReg == ID_EX.rs)
+ForwardA = 01 (MEM/WB -> EX) iff (MEM_WB.RegWrite && MEM_WB.WriteReg != 0 && !(EX Hazard) && MEM_WB.WriteReg == ID_EX.rs)
+  </pre>
+
+  <h3>4.2 Load-Use Hazard & 1-Cycle Stall Bubble</h3>
+  <p>
+    When a Load instruction (<code>LW</code>) is followed immediately by an instruction that reads the loaded register, forwarding alone cannot prevent a stall because data only becomes available at the end of the MEM stage. The hazard unit detects this condition:
+  </p>
+  <div class="callout">
+    <strong>Load-Use Detection:</strong> <code>ID_EX.MemRead &amp;&amp; (ID_EX.WriteReg == IF_ID.rs || ID_EX.WriteReg == IF_ID.rt)</code><br>
+    <strong>Action:</strong> Insert 1-cycle bubble (NOP) into <code>ID/EX</code>; hold <code>IF/ID</code> and $PC$ write-enables.
+  </div>
+
+  <div class="screenshot-figure">
+    <img src="../screenshots/coa_load_use_hazard.png" alt="Load-Use Hazard Demonstration">
+    <div class="screenshot-caption">Figure 3: Load-Use Hazard analysis showing 1-cycle bubble insertion followed by MEM/WB hardware forwarding into the EX stage.</div>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- Amdahl's Law & Performance Modeling -->
+  <h2>5. Quantitative Performance Modeling & Amdahl's Law</h2>
+  <p>
+    The simulator integrates real-time quantitative performance equations defined in the curriculum:
+  </p>
+  <ul>
+    <li><strong>Theoretical Pipeline Speedup:</strong>
+      $$S = \frac{n \cdot k}{k + n - 1 + N_{\text{stalls}}}$$
+    </li>
+    <li><strong>Cycles Per Instruction (CPI):</strong>
+      $$\text{CPI} = \frac{C_{\text{actual}}}{n} = 1 + \frac{N_{\text{stalls}}}{n}$$
+    </li>
+    <li><strong>Amdahl's Law for Accelerated Architecture:</strong>
+      $$S_{\text{overall}} = \frac{1}{(1 - f) + \frac{f}{s}}, \quad S_{\max} = \frac{1}{1 - f}$$
+    </li>
+  </ul>
+
+  <div class="screenshot-figure">
+    <img src="../screenshots/coa_amdahl_performance_lab.png" alt="Amdahl's Law Laboratory">
+    <div class="screenshot-caption">Figure 4: Amdahl's Law Laboratory with interactive fraction ($f$) and speedup ($s$) sliders alongside dynamic sensitivity curves.</div>
+  </div>
+
+  <h2>6. Experimental Benchmarking & Execution Results</h2>
+  <p>
+    Five comprehensive benchmarks were evaluated to verify cycle accuracy, hazard avoidance, and throughput:
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>Benchmark Program</th>
+        <th>$IC$</th>
+        <th>Cycles ($C$)</th>
+        <th>Measured CPI</th>
+        <th>Speedup ($S$)</th>
+        <th>Data Stalls</th>
+        <th>Flushes</th>
+        <th>Output Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>1. RAW Forwarding</strong></td>
+        <td>6</td>
+        <td>10</td>
+        <td>1.667</td>
+        <td>3.00x</td>
+        <td>0</td>
+        <td>0</td>
+        <td>Verified ($t4 = 0$)</td>
+      </tr>
+      <tr>
+        <td><strong>2. Load-Use Hazard</strong></td>
+        <td>5</td>
+        <td>10</td>
+        <td>2.000</td>
+        <td>2.50x</td>
+        <td>1</td>
+        <td>0</td>
+        <td>Verified ($s2 = 198$)</td>
+      </tr>
+      <tr>
+        <td><strong>3. Branch Loop (Sum 1..5)</strong></td>
+        <td>16</td>
+        <td>21</td>
+        <td>1.312</td>
+        <td>3.81x</td>
+        <td>0</td>
+        <td>4</td>
+        <td>Verified (Sum = 15)</td>
+      </tr>
+      <tr>
+        <td><strong>4. Structural Memory (VN)</strong></td>
+        <td>5</td>
+        <td>11</td>
+        <td>2.200</td>
+        <td>2.27x</td>
+        <td>0</td>
+        <td>0</td>
+        <td>Verified (Stall recorded)</td>
+      </tr>
+      <tr>
+        <td><strong>5. Fibonacci (F0..F6)</strong></td>
+        <td>38</td>
+        <td>46</td>
+        <td>1.211</td>
+        <td>4.13x</td>
+        <td>0</td>
+        <td>5</td>
+        <td>Verified (Mem[0..24])</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Verification Test Suite Screenshot -->
+  <div class="screenshot-figure">
+    <img src="../screenshots/coa_automated_test_suite.png" alt="Automated Verification Suite">
+    <div class="screenshot-caption">Figure 5: In-browser test runner displaying 100% pass rate across the 50-assertion test suite.</div>
+  </div>
+
+  <h2>7. Conclusion & Academic Reflection</h2>
+  <p>
+    The **COA 5-Stage Pipelined Processor Studio** bridges theoretical concepts and practical microarchitectural behavior. By providing visual, cycle-by-cycle confirmation of forwarding bypasses, bubble stalls, branch predictions, and structural conflicts, this microproject delivers an authoritative implementation of Computer Organization and Architecture Modules 1, 2, and 3.
+  </p>
+
+</body>
+</html>
