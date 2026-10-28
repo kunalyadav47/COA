@@ -15,6 +15,8 @@
 - **Institution:** Kalvium Community / Engineering Undergraduate Program
 - **Project Title:** Interactive 5-Stage RISC Pipelined Processor Simulator, Hazard Resolution Studio & Quantitative Performance Analyzer
 - **Focus Area:** Module 3 (Instruction Pipelining, Hazard Resolution & Amdahl's Law) integrated with Module 2 (CPU Datapath, Instruction Cycle & Control Units) and Module 1 (Functional Units & Common Bus Organization)
+- **Live Vercel Application:** [https://coa-pipelining-simulator.vercel.app/](https://coa-pipelining-simulator.vercel.app/)
+- **GitHub Repository:** [https://github.com/kunalyadav47/COA](https://github.com/kunalyadav47/COA)
 
 ---
 

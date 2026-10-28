@@ -1,8 +1,14 @@
 # COA 5-Stage Pipelined Processor Studio
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Vercel-blue?style=for-the-badge&logo=vercel)](https://coa-pipelining-simulator.vercel.app/)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/kunalyadav47/COA)
+[![Tests Passing](https://img.shields.io/badge/Tests-50%2F50%20Passing-success?style=for-the-badge)](https://coa-pipelining-simulator.vercel.app/)
+
 **Computer Organization & Architecture (COA) Academic Microproject**  
 **Student:** Kunal Yadav | **Roll No:** 2411021060008 | **Squad:** 70  
 **Curriculum Scope:** Module 3 (Instruction Pipelining, Hazard Resolution & Amdahl's Law) integrated with Module 2 (CPU Datapath & Control) and Module 1 (Functional Units & Common Bus Organization).
+
+🌐 **Live Web Application:** [https://coa-pipelining-simulator.vercel.app/](https://coa-pipelining-simulator.vercel.app/)
 
 ---
 
